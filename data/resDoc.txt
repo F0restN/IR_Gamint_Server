@@ -19796,4 +19796,3 @@ Each game the deck is procedurally generated. It's a huge maze of corridors and 
 You have to look out for tools and parts to craft gadgets that might help you on the way.<br />
 Be aware, you are not alone on that station. 
 </CONTENT>
-</GAME>

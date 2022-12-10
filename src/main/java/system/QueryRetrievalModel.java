@@ -1,3 +1,5 @@
+package system;
+
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -10,9 +12,9 @@ import org.apache.lucene.store.FSDirectory;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import indexHandler.MyIndexReader;
-import classes.Path;
-import classes.Document;
+import system.indexHandler.MyIndexReader;
+import system.classes.Path;
+import system.classes.Document;
 
 public class QueryRetrievalModel {
 

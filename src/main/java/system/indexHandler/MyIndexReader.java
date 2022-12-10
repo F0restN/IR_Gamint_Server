@@ -1,4 +1,4 @@
-package indexHandler;
+package system.indexHandler;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import classes.Path;
+import system.classes.Path;
 
 /**
  * A class for reading your index.
