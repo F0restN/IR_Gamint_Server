@@ -1,4 +1,4 @@
-package indexHandler;
+package system.indexHandler;
 
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import classes.Path;
+import system.classes.Path;
 
 public class MyIndexWriter {
 	

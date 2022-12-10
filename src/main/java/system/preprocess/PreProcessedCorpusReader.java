@@ -1,13 +1,12 @@
-package preprocess;
+package system.preprocess;
 
 
-import classes.Path;
+import system.classes.Path;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ContentHandler;
 import java.util.HashMap;
 import java.util.Map;
 

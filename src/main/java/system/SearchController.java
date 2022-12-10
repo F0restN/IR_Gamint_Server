@@ -1,8 +1,10 @@
+package system;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import classes.Document;
+import system.classes.Document;
 import java.util.List;
 
 @RequestMapping(path = "query")

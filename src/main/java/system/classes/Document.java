@@ -1,4 +1,4 @@
-package classes;
+package system.classes;
 
 public class Document {
 	

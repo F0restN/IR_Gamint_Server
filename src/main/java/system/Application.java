@@ -1,17 +1,19 @@
-import indexHandler.MyIndexWriter;
+package system;
+
+import system.indexHandler.MyIndexWriter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import preprocess.PreProcessedCorpusReader;
+import system.preprocess.PreProcessedCorpusReader;
 
 import java.util.Map;
 
 @SpringBootApplication
-public class DemoApplication {
+public class Application {
 
 	public static void main(String[] args) throws Exception {
-		DemoApplication demoApplication = new DemoApplication();
+		Application demoApplication = new Application();
 		demoApplication.WriteIndex();
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 	public void WriteIndex() throws Exception {
