@@ -38,9 +38,9 @@ public class QueryRetrievalModel {
 		List<Document> results = new ArrayList<>();
 		Query theQ = new QueryParser("CONTENT", new WhitespaceAnalyzer()).parse(aQuery);
 		ScoreDoc[] scoreDoc = indexSearcher.search(theQ, TopN).scoreDocs;
-//		for (ScoreDoc score : scoreDoc) {
-//			results.add(new Document(score.doc + "", ireader.document(score.doc).get("DOCNO"), score.score));
-//		}
+		for (ScoreDoc score : scoreDoc) {
+			results.add(new Document(score.doc + "", ireader.document(score.doc).get("DOCNO"), score.score));
+		}
 		return results;
 	}
 

@@ -24,8 +24,8 @@ public class Application {
 
 	public static void main(String[] args) throws Exception {
 		Application demoApplication = new Application();
-		demoApplication.dataClean();
-		//demoApplication.WriteIndex();
+		//demoApplication.dataClean();
+		demoApplication.WriteIndex();
 
 		SpringApplication.run(Application.class, args);
 	}
@@ -83,6 +83,7 @@ public class Application {
 					continue;
 				}
 				descBuffer.append(desc.charAt(j));
+				flagDesc = false;
 			}
 			String descString = descBuffer.toString();
 
@@ -110,13 +111,13 @@ public class Application {
 				boolean flagReview = false;
 				StringBuffer reviewBuffer = new StringBuffer();
 				for (int j = 0; j < review.length(); j++) {
-//					if (flagReview == true) {
-//						continue;
-//					}
+					if (flagReview == true) {
+						continue;
+					}
 					if (review.charAt(j) == '<' || review.charAt(j) == '[') {
 						flagReview = true;
 						continue;
-					} else if (review.charAt(j) == '>' || review.charAt(j) == '[') {
+					} else if (review.charAt(j) == '>' || review.charAt(j) == ']') {
 						flagReview = false;
 						continue;
 					}
@@ -140,7 +141,7 @@ public class Application {
 					}
 				}
 				String reviewFinish = convertStringArrayToString(tokensReview);
-				System.out.println(reviewFinish);
+				//System.out.println(reviewFinish);
 				game.setReview(reviewFinish);
 			}
 			idGameMap.put(id,game);
@@ -149,13 +150,14 @@ public class Application {
 		}
 
 		FileWriter writerIdGame = new FileWriter("data//dataCleanedIdGame.json");
-		FileWriter writerIdContent = new FileWriter("data//dataCleanedIdContent.json");
+		FileWriter writerIdContent = new FileWriter("data//dataCleanedIdContent");
+		BufferedWriter writerIdCon =new BufferedWriter(writerIdContent);
 		JSONArray jsArrGames = new JSONArray();
-		JSONArray jsArrContent = new JSONArray();
+
 		for (String id : idGameMap.keySet()) {
 			// Initialize
 			JSONObject jsonObjectIdGame = new JSONObject();
-			JSONObject jsonObjectIdContent = new JSONObject();
+			;
 
 			// Add attributes
 			Game game = idGameMap.get(id);
@@ -165,19 +167,24 @@ public class Application {
 			jsonObjectIdGame.put("desc", game.getDesc());
 			jsonObjectIdGame.put("imageUrl", game.getImageUrl());
 			jsonObjectIdGame.put("reviews", game.getReview());
-			jsonObjectIdContent.put("id",id);
-			jsonObjectIdContent.put("content",game.getContent());
-
+//			jsonObjectIdContent.put("id",id);
+//			jsonObjectIdContent.put("content",game.getContent());
+			writerIdCon.write(id);
+			writerIdCon.write("\n");
+			writerIdCon.write(game.getContent());
+			writerIdCon.write("\n");
 			// Add to list
 			jsArrGames.add(jsonObjectIdGame);
-			jsArrContent.add(jsonObjectIdContent);
+//			jsArrContent.add(jsonObjectIdContent);
 		}
 		// Write down
 		writerIdGame.write(jsArrGames.toJSONString());
-		writerIdContent.write(jsArrContent.toJSONString());
+		//writerIdContent.write(jsArrContent.toJSONString());
 		// Close
+		writerIdCon.close();
 		writerIdGame.close();
 		writerIdContent.close();
+
 	}
 
 	public void WriteIndex() throws Exception {
