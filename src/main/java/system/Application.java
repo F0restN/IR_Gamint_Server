@@ -1,14 +1,20 @@
 package system;
 
+import system.classes.Path;
 import system.indexHandler.MyIndexWriter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import system.preprocess.PreProcessedCorpusReader;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 
 @SpringBootApplication
 public class Application {
+
 
 	public static void main(String[] args) throws Exception {
 		Application demoApplication = new Application();
@@ -43,5 +49,4 @@ public class Application {
 		System.out.println("totaly document count:  "+count);
 		output.close();
 	}
-
 }
