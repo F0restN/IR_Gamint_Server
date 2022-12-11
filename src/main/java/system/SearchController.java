@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import system.classes.Document;
 import system.classes.Path;
+import system.indexHandler.MyIndexReader;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -19,32 +20,44 @@ public class SearchController {
     HashSet<String> stopSet;
     FileReader rd;
     BufferedReader reader;
+    MyIndexReader ixreader;
 
     public SearchController() throws IOException {
-            rd = new FileReader(Path.stopWord);
-            reader = new BufferedReader(rd);
-            String stopWord;
-            HashSet<String> set = new HashSet<>();
-            while ((stopWord = reader.readLine()) != null) {
-                set.add(stopWord);
-            }
-            this.stopSet = set;
+        rd = new FileReader(Path.stopWord);
+        reader = new BufferedReader(rd);
+        String stopWord;
+        HashSet<String> set = new HashSet<>();
+        while ((stopWord = reader.readLine()) != null) {
+            set.add(stopWord);
+        }
+        this.stopSet = set;
+        this.ixreader = new MyIndexReader();
     }
 
     @GetMapping(path = "/{query}")
     public List<Document> check(@PathVariable("query") String query) throws Exception {
-        QueryRetrievalModel queryRetrievalModel =new QueryRetrievalModel();
-        query = query.toLowerCase();
-        String [] tokens = query.split(" ");
-        for (int i = 0; i < tokens.length; i++) {
+        RFRetrievalModal rfRetrievalModal = new RFRetrievalModal(ixreader);
 
+        // Query processing
+        // ...
+
+        List<Document> results = rfRetrievalModal.RetrieveQuery(query, 20, 100, 0.4);
+        if (results != null) {
+            int rank = 1;
+            for (Document result : results) {
+                System.out.println(query + " Q0 " + result.docno() + " " + rank + " " + result.score());
+                rank++;
+            }
+            System.out.println();
         }
-        List<Document> ans = queryRetrievalModel.retrieveQuery(query,100);
-        for (int i = 0; i < ans.size(); i++) {
-            System.out.println(ans.get(i).docno+"/" + ans.get(i).docid + "/"+ans.get(i).score);
-        }
-        //return "hello";
-        return ans;
+
+//        QueryRetrievalModel queryRetrievalModel = new QueryRetrievalModel();
+//        List<Document> ans = queryRetrievalModel.retrieveQuery(query, 100);
+//        for (int i = 0; i < ans.size(); i++) {
+//            System.out.println(ans.get(i).docno + "/" + ans.get(i).docid + "/" + ans.get(i).score);
+//        }
+//        return "hello";
+        return results;
     }
 
 

@@ -27,10 +27,7 @@ public class MyIndexReader {
 	private IndexSearcher isearcher;
 	
 	public MyIndexReader() throws IOException {
-
 		directory = FSDirectory.open(Paths.get(Path.IndexData));
-
-
 		ireader = DirectoryReader.open(directory);
 		isearcher = new IndexSearcher(ireader);
 	}
