@@ -1,4 +1,4 @@
-package system;
+package system.classes;
 
 public class Query {
 	//you can modify this class
