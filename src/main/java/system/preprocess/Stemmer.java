@@ -541,7 +541,7 @@ public class Stemmer {
 		char[] word="distention".toCharArray();
 		s.add(word, word.length);
 		s.stem();
-		System.out.println(s);
+		System.out.println(s.toString());
 	}
 	
 	
