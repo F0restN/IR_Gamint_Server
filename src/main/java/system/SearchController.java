@@ -49,15 +49,10 @@ public class SearchController {
         String queryRaw = query.get("queryContent");
 
         String[] temp1 = wordCleaner.removeTag(queryRaw).toLowerCase().split(" ");
-        System.out.println("temp1" );
         String[] temp2 = wordCleaner.removeStopWord(temp1);
-        System.out.println("temp2" );
         String[] temp3 = wordNormalizer.stem(temp2);
-        System.out.println("temp3" +temp3[0]);
         String queryClean = StringManipulation.convertStringArrayToString(temp3);
-        System.out.println("clean" + queryClean);
         RFRetrievalModal rfRetrievalModal = new RFRetrievalModal(ixreader);
-        System.out.println("model" + queryClean);
 
         //retrieve process
         List<Document> results = rfRetrievalModal.RetrieveQuery(queryClean, 20, 100, 0.4);
@@ -69,7 +64,7 @@ public class SearchController {
             }
             System.out.println();
         }
-        System.out.println(results.size());
+
 //        QueryRetrievalModel queryRetrievalModel = new QueryRetrievalModel();
 //        List<Document> ans = queryRetrievalModel.retrieveQuery(query, 100);
 //        for (int i = 0; i < ans.size(); i++) {
