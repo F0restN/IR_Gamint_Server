@@ -14,20 +14,20 @@ public class Document {
 		this.docno = docno;
 		this.score = score;
 	}
-	
-	public String docid() {
+
+	public String getDocid() {
 		return docid;
 	}
-	
-	public String docno() {
+
+	public String getDocno() {
 		return docno;
 	}
-	
-	public double score() {
+
+	public double getScore() {
 		return score;
 	}
-	
-	public void setDocid( String docid ) {
+
+	public void setDocid(String docid ) {
 		this.docid = docid;
 	}
 	

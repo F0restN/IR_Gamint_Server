@@ -3,7 +3,7 @@ package system.classes;
 public class Query {
 	//you can modify this class
 
-	private String queryContent;	
+	private String queryContent;
 	private String topicId;	
 
 	public String GetQueryContent() {
