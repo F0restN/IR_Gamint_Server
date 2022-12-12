@@ -1,11 +1,9 @@
 package system;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import system.classes.Document;
 import system.classes.Path;
+import system.classes.Query;
 import system.indexHandler.MyIndexReader;
 
 import java.io.BufferedReader;
@@ -34,14 +32,14 @@ public class SearchController {
         this.ixreader = new MyIndexReader();
     }
 
-    @GetMapping(path = "/{query}")
-    public List<Document> check(@PathVariable("query") String query) throws Exception {
+    @PostMapping
+    public List<Document> check(@RequestBody Query query) throws Exception {
         RFRetrievalModal rfRetrievalModal = new RFRetrievalModal(ixreader);
 
         // Query processing
         // ...
 
-        List<Document> results = rfRetrievalModal.RetrieveQuery(query, 20, 100, 0.4);
+        List<Document> results = rfRetrievalModal.RetrieveQuery(query.GetQueryContent(), 20, 100, 0.4);
         if (results != null) {
             int rank = 1;
             for (Document result : results) {

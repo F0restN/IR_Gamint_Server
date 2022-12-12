@@ -21,7 +21,7 @@ public class PreProcessedCorpusReader {
         // This constructor should open the file in Path.DataTextDir
         // and also should make preparation for function nextDocument()
         // remember to close the file that you opened, when you do not use it any more
-        instream_collection = new FileInputStream(Path.dataPath);
+        instream_collection = new FileInputStream(Path.dataCleanedIDContent);
         is = new InputStreamReader(instream_collection);
         br = new BufferedReader(is);
     }

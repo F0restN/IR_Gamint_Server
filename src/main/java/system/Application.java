@@ -26,8 +26,8 @@ public class Application {
 
 	public static void main(String[] args) throws Exception {
 		Application application = new Application();
-		application.dataClean();
-		application.WriteIndex();
+//		application.dataClean();
+//		application.WriteIndex();
 
 		SpringApplication.run(Application.class, args);
 	}
