@@ -1,61 +1,61 @@
 package system;
 
+import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.*;
 import system.classes.Document;
+import system.classes.Game;
 import system.classes.Path;
-import system.classes.Query;
 import system.indexHandler.MyIndexReader;
+import system.preprocess.WordCleaner;
+import system.preprocess.WordNormalizer;
+import system.utils.DataLoader;
+import system.utils.Rank;
+import system.utils.StringManipulation;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @RequestMapping(path = "query")
 @RestController
-public class SearchController {
-    HashSet<String> stopSet;
-    FileReader rd;
-    BufferedReader reader;
-    MyIndexReader ixreader;
 
-    public SearchController() throws IOException {
-        rd = new FileReader(Path.stopWord);
-        reader = new BufferedReader(rd);
-        String stopWord;
-        HashSet<String> set = new HashSet<>();
-        while ((stopWord = reader.readLine()) != null) {
-            set.add(stopWord);
-        }
-        this.stopSet = set;
-        this.ixreader = new MyIndexReader();
+public class SearchController {
+    static MyIndexReader ixreader;
+    static WordCleaner wordCleaner;
+    static WordNormalizer wordNormalizer;
+    static HashMap<String, Game> idGameMap;
+    static RFRetrievalModal rfRetrievalModal;
+    public SearchController() throws IOException, ParseException {
+        // Initialize
+        idGameMap = DataLoader.loadGameMap();
+        ixreader = new MyIndexReader();
+        wordCleaner = new WordCleaner();
+        wordNormalizer = new WordNormalizer();
+        rfRetrievalModal = new RFRetrievalModal(ixreader);
     }
 
     @PostMapping
-    public List<Document> check(@RequestBody Query query) throws Exception {
-        RFRetrievalModal rfRetrievalModal = new RFRetrievalModal(ixreader);
+    public List<Game> check(@RequestBody Map<String,String> query) throws Exception {
+        // Process query
+        String[] temp1 = wordCleaner.removeTag(query.get("queryContent")).toLowerCase().split(" ");
+        String[] temp2 = wordCleaner.removeStopWord(temp1);
+        String[] temp3 = wordNormalizer.stem(temp2);
+        String queryClean = StringManipulation.convertStringArrayToString(temp3);
 
-        // Query processing
-        // ...
+        // RFQLM Retrieve
+        List<Document> results = rfRetrievalModal.RetrieveQuery(queryClean, 20, 100, 0.4);
+        Rank rank = new Rank();
+        return rank.getRank(results, idGameMap);
 
-        List<Document> results = rfRetrievalModal.RetrieveQuery(query.GetQueryContent(), 20, 100, 0.4);
-        if (results != null) {
-            int rank = 1;
-            for (Document result : results) {
-                System.out.println(query + " Q0 " + result.docno() + " " + rank + " " + result.score());
-                rank++;
-            }
-            System.out.println();
-        }
-
+        // Lucene Retrieve
 //        QueryRetrievalModel queryRetrievalModel = new QueryRetrievalModel();
 //        List<Document> ans = queryRetrievalModel.retrieveQuery(query, 100);
 //        for (int i = 0; i < ans.size(); i++) {
 //            System.out.println(ans.get(i).docno + "/" + ans.get(i).docid + "/" + ans.get(i).score);
 //        }
 //        return "hello";
-        return results;
+//        return final rank
     }
 
 

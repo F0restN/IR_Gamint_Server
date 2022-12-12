@@ -57,8 +57,8 @@ public class RFRetrievalModal {
         results.sort(new Comparator<Document>() {
             @Override
             public int compare(Document o1, Document o2) {
-                if (o1.score() != o2.score())
-                    return o1.score() < o2.score() ? 1 : -1;
+                if (o1.getScore() != o2.getScore())
+                    return o1.getScore() < o2.getScore() ? 1 : -1;
                 else
                     return 0;
             }
@@ -88,7 +88,7 @@ public class RFRetrievalModal {
         String[] tokens = queryManipulation.querySplit(Query);
         int[] docIds = new int[feedbackDocs.size()];
         for (int i = 0; i < docIds.length; i++) {
-            docIds[i] = Integer.parseInt(feedbackDocs.get(i).docid());
+            docIds[i] = Integer.parseInt(feedbackDocs.get(i).getDocid());
         }
 
         // Calculate score for each token
