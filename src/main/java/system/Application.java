@@ -1,61 +1,55 @@
 package system;
 
-
-import com.fasterxml.jackson.core.JsonParser;
-import org.apache.tomcat.jni.File;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import system.classes.Game;
-import system.classes.Path;
-import system.indexHandler.MyIndexWriter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import system.preprocess.PreProcessedCorpusReader;
 import org.json.simple.*;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+
+import system.preprocess.WordNormalizer;
+import system.utils.StringManipulation;
+import system.classes.Game;
+import system.classes.Path;
 import system.preprocess.Stemmer;
+import system.preprocess.WordCleaner;
+import system.preprocess.PreProcessedCorpusReader;
+import system.indexHandler.MyIndexWriter;
+
 @SpringBootApplication
 public class Application {
 
 
 	public static void main(String[] args) throws Exception {
-		Application demoApplication = new Application();
-		//demoApplication.dataClean();
-		demoApplication.WriteIndex();
+		Application application = new Application();
+		application.dataClean();
+		application.WriteIndex();
 
 		SpringApplication.run(Application.class, args);
 	}
 
-	public static String convertStringArrayToString(String[] strArr) {
-		if(strArr.length < 2){
-			return "";
-		}
 
-		StringBuilder sb = new StringBuilder();
-		for (String str : strArr)
-			sb.append(str);
-		return sb.substring(0, sb.length() - 1);
-	}
 
 	public void dataClean() throws IOException, ParseException {
-		HashSet <String> stopWordsSet = new HashSet<>();
-		FileReader rd =new FileReader("data//stopWord.txt");
-		BufferedReader reader = new BufferedReader(rd);
-		String stopWord;
-		while ((stopWord = reader.readLine()) != null) {
-			stopWordsSet.add(stopWord);
-		}
+		WordCleaner wordCleaner = new WordCleaner();
+		WordNormalizer wordNormalizer = new WordNormalizer();
 
-		JSONArray jsonArray = new JSONArray();
-		JSONParser jsonParser = new JSONParser();
+		// Read data
 		FileReader fileReader = new FileReader(Path.rawData);
-		Object object = jsonParser.parse(fileReader);
-		jsonArray = (JSONArray) object;
-		HashMap<String, Game> idGameMap = new HashMap<>();
+		JSONParser jsonParser = new JSONParser();
+		JSONArray jsonArray = (JSONArray) jsonParser.parse(fileReader);
+
+		// Write data
+		FileWriter writerIdGame = new FileWriter(Path.dataCleanedIDGame);
+		FileWriter writerIdContent = new FileWriter(Path.dataCleandIDContent);
+		BufferedWriter writerIdCon =new BufferedWriter(writerIdContent);
+		JSONArray jsArrGames = new JSONArray();
+
+		HashMap<String, Game> gameMap = new HashMap<>();
 		for (int i = 0; i < jsonArray.size(); i++) {
 			JSONObject agent = (JSONObject) jsonArray.get(i);
 			String id = (String) agent.get("id");
@@ -63,128 +57,40 @@ public class Application {
 			String desc = (String) agent.get("desc");
 			String shortDesc = (String) agent.get("shortDesc");
 			String review = (String) agent.get("reviews");
-			String imageUrl = (String) agent.get("imageUrl");
-			Game game = new Game();
-			game.setId(id);
-			game.setName(name);
-			game.setShortDesc(shortDesc);
-			game.setImageUrl(imageUrl);
-			StringBuffer descBuffer = new StringBuffer();
-			boolean flagDesc = false;
-			for (int j = 0; j < desc.length(); j++) {
-				if (flagDesc == true) {
-					continue;
-				}
-				if (desc.charAt(j) == '<' || desc.charAt(j) == '[') {
-					flagDesc = true;
-					continue;
-				} else if (desc.charAt(j) == '>' || desc.charAt(j) == ']') {
-					flagDesc = false;
-					continue;
-				}
-				descBuffer.append(desc.charAt(j));
-				flagDesc = false;
-			}
-			String descString = descBuffer.toString();
+			String imageUrl = (String) agent.get("img");
 
-			descString = descString.toLowerCase();
-			String[] tokensDesc = descString.split(" ");
-			for (int k = 0; k < tokensDesc.length; k++) {
-				if(stopWordsSet.contains(tokensDesc[k]))
-				{
-					tokensDesc[k] = "";
-				}
-				else
-				{
-					Stemmer s = new Stemmer();
-					char[] word=tokensDesc[k].toCharArray();
-					s.add(word, word.length);
-					s.stem();
-					tokensDesc[k] = s.toString();
-					//System.out.println(s.);
-				}
-			}
-			String descFinish = convertStringArrayToString(tokensDesc);
-			game.setDesc(descFinish);
+			// Game json file
+			Game game = new Game(id, name, shortDesc, imageUrl);
+			gameMap.put(id, game);
 
-			if(review != null && review.length() != 0) {
-				boolean flagReview = false;
-				StringBuffer reviewBuffer = new StringBuffer();
-				for (int j = 0; j < review.length(); j++) {
-					if (flagReview == true) {
-						continue;
-					}
-					if (review.charAt(j) == '<' || review.charAt(j) == '[') {
-						flagReview = true;
-						continue;
-					} else if (review.charAt(j) == '>' || review.charAt(j) == ']') {
-						flagReview = false;
-						continue;
-					}
-					reviewBuffer.append(review.charAt(j));
-					flagReview = false;
-				}
-				String reviewString = String.valueOf(reviewBuffer);
-				///System.out.println(reviewString);
-				reviewString = reviewString.toLowerCase();
-				String[] tokensReview = reviewString.split(" ");
-				for (int k = 0; k < tokensReview.length; k++) {
-					if (stopWordsSet.contains(tokensReview[k])) {
-						tokensReview[k] = "";
-					} else {
-						Stemmer s = new Stemmer();
-						char[] word = tokensReview[k].toCharArray();
-						s.add(word, word.length);
-						s.stem();
-						tokensReview[k] = s.toString();
-//						System.out.println(tokensReview[k]);
-					}
-				}
-				String reviewFinish = convertStringArrayToString(tokensReview);
-				//System.out.println(reviewFinish);
-				game.setReview(reviewFinish);
-			}
-			idGameMap.put(id,game);
-			//System.out.println(game.getDesc());
-			//System.out.println(game.getReview());
-		}
-
-		FileWriter writerIdGame = new FileWriter("data//dataCleanedIdGame.json");
-		FileWriter writerIdContent = new FileWriter("data//dataCleanedIdContent");
-		BufferedWriter writerIdCon =new BufferedWriter(writerIdContent);
-		JSONArray jsArrGames = new JSONArray();
-
-		for (String id : idGameMap.keySet()) {
-			// Initialize
+			// Write Game json
 			JSONObject jsonObjectIdGame = new JSONObject();
-			;
-
-			// Add attributes
-			Game game = idGameMap.get(id);
 			jsonObjectIdGame.put("id", id);
-			jsonObjectIdGame.put("name", game.getName());
-			jsonObjectIdGame.put("shortDesc", game.getShortDesc());
-			jsonObjectIdGame.put("desc", game.getDesc());
-			jsonObjectIdGame.put("imageUrl", game.getImageUrl());
-			jsonObjectIdGame.put("reviews", game.getReview());
-//			jsonObjectIdContent.put("id",id);
-//			jsonObjectIdContent.put("content",game.getContent());
+			jsonObjectIdGame.put("name", name);
+			jsonObjectIdGame.put("shortDesc", shortDesc);
+			jsonObjectIdGame.put("imageUrl", imageUrl);
+			jsArrGames.add(jsonObjectIdGame);
+
+			// Write Content Txt file
+			// Remove Tag & special characters & url etc.
+			String rawContent = name + " " + desc + " " + shortDesc + " " + review;
+			String[] temp1 = wordCleaner.removeTag(rawContent).toLowerCase().split(" ");
+			String[] temp2 = wordCleaner.removeStopWord(temp1);
+			String[] temp3 = wordNormalizer.stem(temp2);
+			String cleanContent = StringManipulation.convertStringArrayToString(temp3);
+
 			writerIdCon.write(id);
 			writerIdCon.write("\n");
-			writerIdCon.write(game.getContent());
+			writerIdCon.write(cleanContent);
 			writerIdCon.write("\n");
-			// Add to list
-			jsArrGames.add(jsonObjectIdGame);
-//			jsArrContent.add(jsonObjectIdContent);
 		}
+
 		// Write down
 		writerIdGame.write(jsArrGames.toJSONString());
-		//writerIdContent.write(jsArrContent.toJSONString());
 		// Close
 		writerIdCon.close();
 		writerIdGame.close();
 		writerIdContent.close();
-
 	}
 
 	public void WriteIndex() throws Exception {

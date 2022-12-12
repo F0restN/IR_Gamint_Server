@@ -5,8 +5,16 @@ public class Game {
     String name;
     String shortDesc;
     String imageUrl;
-    String desc;
-    String review;
+
+    public Game() {
+    }
+
+    public Game(String id, String name, String shortDesc, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.shortDesc = shortDesc;
+        this.imageUrl = imageUrl;
+    }
 
     public String getId() {
         return id;
@@ -40,26 +48,6 @@ public class Game {
         this.imageUrl = imageUrl;
     }
 
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public String getReview() {
-        return review;
-    }
-
-    public void setReview(String review) {
-        this.review = review;
-    }
-
-    public String getContent() {
-        return name + shortDesc + desc + review;
-    }
-
     @Override
     public String toString() {
         return "Game{" +
@@ -67,8 +55,6 @@ public class Game {
                 ", name='" + name + '\'' +
                 ", shortDesc='" + shortDesc + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", desc='" + desc + '\'' +
-                ", review='" + review + '\'' +
                 '}';
     }
 }
