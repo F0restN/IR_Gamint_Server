@@ -8,10 +8,12 @@ import org.json.simple.*;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import system.preprocess.WordNormalizer;
+import system.utils.IdGameMap;
 import system.utils.StringManipulation;
 import system.classes.Game;
 import system.classes.Path;
@@ -26,8 +28,8 @@ public class Application {
 
 	public static void main(String[] args) throws Exception {
 		Application application = new Application();
-//		application.dataClean();
-//		application.WriteIndex();
+		//application.dataClean();
+		//application.WriteIndex();
 
 		SpringApplication.run(Application.class, args);
 	}
@@ -120,6 +122,8 @@ public class Application {
 		System.out.println("totaly document count:  "+count);
 		output.close();
 	}
+
+
 
 
 }
