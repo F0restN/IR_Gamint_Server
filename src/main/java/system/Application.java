@@ -45,7 +45,7 @@ public class Application {
 
 		// Write data
 		FileWriter writerIdGame = new FileWriter(Path.dataCleanedIDGame);
-		FileWriter writerIdContent = new FileWriter(Path.dataCleandIDContent);
+		FileWriter writerIdContent = new FileWriter(Path.dataCleanedIDContent);
 		BufferedWriter writerIdCon =new BufferedWriter(writerIdContent);
 		JSONArray jsArrGames = new JSONArray();
 

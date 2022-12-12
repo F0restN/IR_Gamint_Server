@@ -6,6 +6,5 @@ public class Path {
     public static String IndexData="data//indexData";
     public static String stopWord = "data//stopWord.txt";
     public static String dataCleanedIDGame = "data//dataCleanedIdGame.json";
-    public static String dataCleandIDContent = "data//dataCleanedIdContent.txt";
-    public static String testData = "data//test.json";
+    public static String dataCleanedIDContent = "data//dataCleanedIdContent.txt";
 }
