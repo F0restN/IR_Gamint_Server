@@ -60,11 +60,11 @@ public class RFRetrievalModal {
                 if (o1.score() != o2.score())
                     return o1.score() < o2.score() ? 1 : -1;
                 else
-                    return 1;
+                    return 0;
             }
         });
 
-        return results.subList(0, TopN);
+        return results.subList(0, Math.min(results.size(), TopN));
     }
 
     /*
