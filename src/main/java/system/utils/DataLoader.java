@@ -12,20 +12,22 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class IdGameMap {
-    public static HashMap<String, Game> setIdGameMap() throws IOException, ParseException {
+public class DataLoader {
+    public static HashMap<String, Game> loadGameMap() throws IOException, ParseException {
+        // Init
         FileReader fileReader = new FileReader(Path.dataCleanedIDGame);
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray = (JSONArray) jsonParser.parse(fileReader);
+        // Loading
         HashMap<String, Game> idGameMap = new HashMap<>();
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject agent = (JSONObject) jsonArray.get(i);
+        for (Object o : jsonArray) {
+            JSONObject agent = (JSONObject) o;
             String id = (String) agent.get("id");
             String name = (String) agent.get("name");
             String shortDesc = (String) agent.get("shortDesc");
             String imageUrl = (String) agent.get("imageUrl");
-            Game game = new Game(id,name,shortDesc,imageUrl);
-            idGameMap.put(id,game);
+            Game game = new Game(id, name, shortDesc, imageUrl);
+            idGameMap.put(id, game);
         }
         return idGameMap;
     }
