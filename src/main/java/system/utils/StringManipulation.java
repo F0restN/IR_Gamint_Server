@@ -7,9 +7,6 @@ import java.util.List;
 public class StringManipulation {
 
     public static String convertStringArrayToString(String[] strArr) {
-        if(strArr.length < 2){
-            return "";
-        }
 
         StringBuilder sb = new StringBuilder();
         for (String str : strArr){
