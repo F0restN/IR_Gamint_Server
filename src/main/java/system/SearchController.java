@@ -20,7 +20,6 @@ import java.util.*;
 
 @RequestMapping(path = "query")
 @RestController
-
 public class SearchController {
     HashSet<String> stopSet;
     FileReader rd;
