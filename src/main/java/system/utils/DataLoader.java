@@ -26,7 +26,8 @@ public class DataLoader {
             String name = (String) agent.get("name");
             String shortDesc = (String) agent.get("shortDesc");
             String imageUrl = (String) agent.get("imageUrl");
-            String rating = (String) agent.get("rating");
+//            String rating = (String) agent.get("rating");
+            String rating = "Mixed";
             Game game = new Game(id, name, shortDesc, imageUrl, rating);
             idGameMap.put(id, game);
         }

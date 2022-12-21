@@ -56,7 +56,8 @@ public class Application {
 			String shortDesc = (String) agent.get("shortDesc");
 			String review = (String) agent.get("reviews");
 			String imageUrl = (String) agent.get("img");
-			String rating = (String) agent.get("rating");
+//			String rating = (String) agent.get("rating");
+			String rating = "Mixed";
 
 			// Write Game json
 			JSONObject jsonObjectIdGame = new JSONObject();
