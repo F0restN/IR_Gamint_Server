@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 import system.classes.Document;
+import system.classes.Game;
 import system.indexHandler.MyIndexReader;
 import system.utils.Calculator;
 import system.utils.QueryManipulation;
@@ -19,10 +20,9 @@ public class RFRetrievalModal {
     QueryManipulation queryManipulation;
     int mu = 2000;
 
-    public RFRetrievalModal(MyIndexReader ixreader)
-    {
+    public RFRetrievalModal(MyIndexReader ixreader) {
         try {
-            this.ixreader=ixreader;
+            this.ixreader = ixreader;
             this.model = new QueryRetrievalModel();
             this.calculator = new Calculator(ixreader);
             this.queryManipulation = new QueryManipulation();
@@ -36,23 +36,24 @@ public class RFRetrievalModal {
      * The returned results (retrieved documents) should be ranked by the score (from the most relevant to the least).
      *
      * @param Query The query to be searched for.
-     * @param TopN The maximum number of returned document
-     * @param TopK The count of feedback documents
+     * @param TopN  The maximum number of returned document
+     * @param TopK  The count of feedback documents
      * @param alpha parameter of relevance feedback model
      * @return TopN most relevant document, in List structure
      */
-    public List<Document> RetrieveQuery(String Query, int TopN, int TopK, double alpha) throws Exception {
+    public List<Document> RetrieveQuery(String Query, int TopN, int TopK, double alpha, HashMap<String, Game> idGameMap) throws Exception {
         // (1) you should first use the original retrieval model to get TopK documents, which will be regarded as feedback documents
         feedbackDocs = model.retrieveQuery(Query, TopK);
 
         // (2) implement GetTokenRFScore to get each query token's P(token|feedback model) in feedback document. get P(token|feedback documents)
-        HashMap<String,Double> TokenRFScore= GetTokenRFScore(Query,TopK);
+        HashMap<String, Double> TokenRFScore = GetTokenRFScore(Query, TopK);
 
         // (3) implement the relevance feedback model for each token: combine the each query token's original retrieval score P(token|document) with its score in feedback documents P(token|feedback model)
         HashMap<Integer, HashMap<String, Double>> DocScoreForEachTokenMap = GetTokenScore(Query, alpha, TokenRFScore);
 
         // (4) for each document, use the query likelihood language model to get the whole query's new score, P(Q|document)=P(token_1|document')*P(token_2|document')*...*P(token_n|document')
-        List<Document> results = GetQueryScoreForEachDoc(DocScoreForEachTokenMap);
+        List<Document> results = GetQueryScoreForEachDoc(DocScoreForEachTokenMap, idGameMap);
+
         // (5) sort all retrieved documents from most relevant to least, and return TopN
         results.sort(new Comparator<Document>() {
             @Override
@@ -74,15 +75,13 @@ public class RFRetrievalModal {
      * */
 
     /**
-     *
      * @param Query
      * @param TopK
      * @return
      * @throws Exception
      */
-    public HashMap<String,Double> GetTokenRFScore(String Query, int TopK) throws Exception
-    {
-        HashMap<String,Double> TokenRFScore=new HashMap<>();
+    public HashMap<String, Double> GetTokenRFScore(String Query, int TopK) throws Exception {
+        HashMap<String, Double> TokenRFScore = new HashMap<>();
 
         // Initialize
         String[] tokens = queryManipulation.querySplit(Query);
@@ -92,7 +91,7 @@ public class RFRetrievalModal {
         }
 
         // Calculate score for each token
-        for (String token: tokens
+        for (String token : tokens
         ) {
             Double score = calculator.tokenDirichletSmoothProb(token, docIds, mu);
             TokenRFScore.put(token, score);
@@ -102,9 +101,8 @@ public class RFRetrievalModal {
     }
 
     /**
-     *
-     * @param Query query
-     * @param alpha weight
+     * @param Query        query
+     * @param alpha        weight
      * @param tokenRFScore token score from ef
      * @return <[DocID], Map<Token, Score>>
      * @throws IOException exception
@@ -116,7 +114,7 @@ public class RFRetrievalModal {
         for (String token : tokens) {
             // Error handle for un-appear token
             int[][] postingList = ixreader.getPostingList(token);
-            if(postingList != null){
+            if (postingList != null) {
                 for (int[] ints : postingList) {
                     queryRelevantDocSet.add(ints[0]);
                 }
@@ -124,9 +122,9 @@ public class RFRetrievalModal {
         }
         // Calculate overall score for each token
         HashMap<Integer, HashMap<String, Double>> docScoreForEachTokenMap = new HashMap<>();
-        for (Integer docId: queryRelevantDocSet) {
+        for (Integer docId : queryRelevantDocSet) {
             HashMap<String, Double> tokenScore = new HashMap<>();
-            for(String token: tokens){
+            for (String token : tokens) {
                 Double score = calculator.tokenScoreQLRFM(tokenRFScore, token, docId, alpha, mu);
                 tokenScore.put(token, score);
             }
@@ -136,24 +134,52 @@ public class RFRetrievalModal {
     }
 
     /**
-     *
      * @param docScoreForEachTokenMap HashMap<Integer, HashMap<String, Double>>
      * @return List<Document>
      * @throws IOException Nonsense
      */
-    public List<Document> GetQueryScoreForEachDoc(HashMap<Integer, HashMap<String, Double>> docScoreForEachTokenMap) throws IOException {
+    public List<Document> GetQueryScoreForEachDoc(HashMap<Integer, HashMap<String, Double>> docScoreForEachTokenMap, HashMap<String, Game> idGameMap) throws IOException {
         List<Document> documentList = new ArrayList<>();
-        for (Integer docId: docScoreForEachTokenMap.keySet()) {
+        double lambda = 0.6;
+        for (Integer docId : docScoreForEachTokenMap.keySet()) {
+            String docNo = ixreader.getDocno(docId);
             // Multiple tokens together
             HashMap<String, Double> tokenScore = docScoreForEachTokenMap.get(docId);
             double score = 1.0;
-            for (String token: tokenScore.keySet()) {
+            for (String token : tokenScore.keySet()) {
                 score *= tokenScore.get(token);
             }
+            double finalizeScore = lambda * score + (1-lambda) * GetRatingScore(idGameMap.get(docNo).getRating());
+
             // Add Doc
-            documentList.add(new Document(String.valueOf(docId), ixreader.getDocno(docId), score));
+            documentList.add(new Document(String.valueOf(docId), docNo, finalizeScore));
         }
         return documentList;
+    }
+
+    public int GetRatingScore(String str) {
+        switch (str) {
+            case ("Overwhelmingly Positive"):
+                return 9;
+            case ("Very Positive"):
+                return 8;
+            case ("Mostly Positive"):
+                return 7;
+            case ("Positive"):
+                return 6;
+            case ("Mixed"):
+                return 5;
+            case ("Mostly Negative"):
+                return 4;
+            case ("Negative"):
+                return 3;
+            case ("Very Negative"):
+                return 2;
+            case ("Overwhelmingly Negative"):
+                return 1;
+            default:
+                return 0;
+        }
     }
 
 }

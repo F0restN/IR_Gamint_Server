@@ -56,6 +56,8 @@ public class Application {
 			String shortDesc = (String) agent.get("shortDesc");
 			String review = (String) agent.get("reviews");
 			String imageUrl = (String) agent.get("img");
+//			String rating = (String) agent.get("rating");
+			String rating = "Mixed";
 
 			// Write Game json
 			JSONObject jsonObjectIdGame = new JSONObject();
@@ -63,6 +65,7 @@ public class Application {
 			jsonObjectIdGame.put("name", name);
 			jsonObjectIdGame.put("shortDesc", shortDesc);
 			jsonObjectIdGame.put("imageUrl", imageUrl);
+			jsonObjectIdGame.put("rating", rating);
 			jsArrGames.add(jsonObjectIdGame);
 
 			// Write Content Txt file
