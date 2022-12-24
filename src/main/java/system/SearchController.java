@@ -57,6 +57,4 @@ public class SearchController {
 //        return "hello";
 //        return final rank
     }
-
-
 }

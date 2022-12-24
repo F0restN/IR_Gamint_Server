@@ -24,7 +24,7 @@ public class Application {
 	public static void main(String[] args) throws Exception {
 		Application application = new Application();
 		// 1. Pre-process data
-		//application.dataClean();
+		application.dataClean();
 
 		// 2. Write index
 		//application.WriteIndex();
@@ -55,9 +55,11 @@ public class Application {
 			String desc = (String) agent.get("desc");
 			String shortDesc = (String) agent.get("shortDesc");
 			String review = (String) agent.get("reviews");
-			String imageUrl = (String) agent.get("img");
-//			String rating = (String) agent.get("rating");
-			String rating = "Mixed";
+			String imageUrl = (String) agent.get("imageUrl");
+			String tag = (String) agent.get("tag");
+			String genre = (String) agent.get("genre");
+			String rating = (String) agent.get("rating");
+
 
 			// Write Game json
 			JSONObject jsonObjectIdGame = new JSONObject();
