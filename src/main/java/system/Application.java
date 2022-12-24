@@ -8,16 +8,12 @@ import org.json.simple.*;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import system.preprocess.WordNormalizer;
-import system.utils.IdGameMap;
 import system.utils.StringManipulation;
 import system.classes.Game;
 import system.classes.Path;
-import system.preprocess.Stemmer;
 import system.preprocess.WordCleaner;
 import system.preprocess.PreProcessedCorpusReader;
 import system.indexHandler.MyIndexWriter;
@@ -25,16 +21,17 @@ import system.indexHandler.MyIndexWriter;
 @SpringBootApplication
 public class Application {
 
-
 	public static void main(String[] args) throws Exception {
 		Application application = new Application();
+		// 1. Pre-process data
 		//application.dataClean();
+
+		// 2. Write index
 		//application.WriteIndex();
 
+		// 3. Load game data will be in Controller modal
 		SpringApplication.run(Application.class, args);
 	}
-
-
 
 	public void dataClean() throws IOException, ParseException {
 		WordCleaner wordCleaner = new WordCleaner();
@@ -51,7 +48,6 @@ public class Application {
 		BufferedWriter writerIdCon =new BufferedWriter(writerIdContent);
 		JSONArray jsArrGames = new JSONArray();
 
-		HashMap<String, Game> gameMap = new HashMap<>();
 		for (int i = 0; i < jsonArray.size(); i++) {
 			JSONObject agent = (JSONObject) jsonArray.get(i);
 			String id = (String) agent.get("id");
@@ -60,10 +56,8 @@ public class Application {
 			String shortDesc = (String) agent.get("shortDesc");
 			String review = (String) agent.get("reviews");
 			String imageUrl = (String) agent.get("img");
-
-			// Game json file
-			Game game = new Game(id, name, shortDesc, imageUrl);
-			gameMap.put(id, game);
+//			String rating = (String) agent.get("rating");
+			String rating = "Mixed";
 
 			// Write Game json
 			JSONObject jsonObjectIdGame = new JSONObject();
@@ -71,6 +65,7 @@ public class Application {
 			jsonObjectIdGame.put("name", name);
 			jsonObjectIdGame.put("shortDesc", shortDesc);
 			jsonObjectIdGame.put("imageUrl", imageUrl);
+			jsonObjectIdGame.put("rating", rating);
 			jsArrGames.add(jsonObjectIdGame);
 
 			// Write Content Txt file
@@ -122,8 +117,4 @@ public class Application {
 		System.out.println("totaly document count:  "+count);
 		output.close();
 	}
-
-
-
-
 }

@@ -5,15 +5,16 @@ public class Game {
     String name;
     String shortDesc;
     String imageUrl;
-
+    String rating;
     public Game() {
     }
 
-    public Game(String id, String name, String shortDesc, String imageUrl) {
+    public Game(String id, String name, String shortDesc, String imageUrl, String rating) {
         this.id = id;
         this.name = name;
         this.shortDesc = shortDesc;
         this.imageUrl = imageUrl;
+        this.rating = rating;
     }
 
     public String getId() {
@@ -46,6 +47,14 @@ public class Game {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
     }
 
     @Override
