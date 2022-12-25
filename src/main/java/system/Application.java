@@ -24,7 +24,7 @@ public class Application {
 	public static void main(String[] args) throws Exception {
 		Application application = new Application();
 		// 1. Pre-process data
-		application.dataClean();
+		//application.dataClean();
 
 		// 2. Write index
 		//application.WriteIndex();
@@ -58,8 +58,8 @@ public class Application {
 			String imageUrl = (String) agent.get("imageUrl");
 			String tag = (String) agent.get("tag");
 			String genre = (String) agent.get("genre");
-			String rating = (String) agent.get("rating");
-
+			//String rating = (String) agent.get("rating");
+			String rating = "Mixed";
 
 			// Write Game json
 			JSONObject jsonObjectIdGame = new JSONObject();
@@ -72,7 +72,7 @@ public class Application {
 
 			// Write Content Txt file
 			// Remove Tag & special characters & url etc.
-			String rawContent = name + " " + desc + " " + shortDesc + " " + review;
+			String rawContent = name + " " + desc + " " + shortDesc + " " + review + " " + tag + " " + genre;
 			String[] temp1 = wordCleaner.removeTag(rawContent).toLowerCase().split(" ");
 			String[] temp2 = wordCleaner.removeStopWord(temp1);
 			String[] temp3 = wordNormalizer.stem(temp2);
