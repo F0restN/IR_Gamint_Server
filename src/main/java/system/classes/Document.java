@@ -38,5 +38,4 @@ public class Document {
 	public void setScore( double score ) {
 		this.score = score;
 	}
-	
 }

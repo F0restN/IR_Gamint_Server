@@ -44,7 +44,7 @@ public class SearchController {
         String queryClean = StringManipulation.convertStringArrayToString(temp3);
 
         // RFQLM Retrieve
-        List<Document> results = rfRetrievalModal.RetrieveQuery(queryClean, 20, 100, 0.4);
+        List<Document> results = rfRetrievalModal.RetrieveQuery(queryClean, 20, 100, 0.4,idGameMap);
         Rank rank = new Rank();
         return rank.getRank(results, idGameMap);
 
@@ -57,6 +57,4 @@ public class SearchController {
 //        return "hello";
 //        return final rank
     }
-
-
 }
