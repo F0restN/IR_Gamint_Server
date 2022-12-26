@@ -149,10 +149,11 @@ public class RFRetrievalModal {
             for (String token : tokenScore.keySet()) {
                 score *= tokenScore.get(token);
             }
-            double finalizeScore = lambda * score + (1-lambda) * GetRatingScore(idGameMap.get(docNo).getRating());
+            //to be determined
+            //double finalizeScore = lambda * score + (1-lambda) * GetRatingScore(idGameMap.get(docNo).getRating());
 
             // Add Doc
-            documentList.add(new Document(String.valueOf(docId), docNo, finalizeScore));
+            documentList.add(new Document(String.valueOf(docId), docNo, score));
         }
         return documentList;
     }

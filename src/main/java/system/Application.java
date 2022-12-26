@@ -58,8 +58,8 @@ public class Application {
 			String imageUrl = (String) agent.get("imageUrl");
 			String tag = (String) agent.get("tag");
 			String genre = (String) agent.get("genre");
-			//String rating = (String) agent.get("rating");
-			String rating = "Mixed";
+			String rating = (String) agent.get("rating");
+			//String rating = "Mixed";
 
 			// Write Game json
 			JSONObject jsonObjectIdGame = new JSONObject();
