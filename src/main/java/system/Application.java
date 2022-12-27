@@ -54,7 +54,7 @@ public class Application {
 			String name = (String) agent.get("name");
 			String desc = (String) agent.get("desc");
 			String shortDesc = (String) agent.get("shortDesc");
-			String review = (String) agent.get("reviews");
+			String review = (String) agent.get("review");
 			String imageUrl = (String) agent.get("imageUrl");
 			String tag = (String) agent.get("tag");
 			String genre = (String) agent.get("genre");
