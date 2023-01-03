@@ -44,14 +44,14 @@ public class SearchController {
         wordNormalizer = new WordNormalizer();
         rfRetrievalModal = new RFRetrievalModal(ixreader);
     }
-    public SearchController() throws IOException, ParseException {
+    /*public SearchController() throws IOException, ParseException {
          //Initialize
         idGameMap = DataLoader.loadGameMap();
         ixreader = new MyIndexReader();
         wordCleaner = new WordCleaner();
         wordNormalizer = new WordNormalizer();
         rfRetrievalModal = new RFRetrievalModal(ixreader);
-    }
+    }*/
 
     @PostMapping
     public List<Game> check(@RequestBody Map<String,String> query) throws Exception {
