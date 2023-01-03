@@ -26,8 +26,26 @@ public class SearchController {
     static WordNormalizer wordNormalizer;
     static HashMap<String, Game> idGameMap;
     static RFRetrievalModal rfRetrievalModal;
+
+    static{
+        try {
+            idGameMap = DataLoader.loadGameMap();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            ixreader = new MyIndexReader();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        wordCleaner = new WordCleaner();
+        wordNormalizer = new WordNormalizer();
+        rfRetrievalModal = new RFRetrievalModal(ixreader);
+    }
     public SearchController() throws IOException, ParseException {
-        // Initialize
+         //Initialize
         idGameMap = DataLoader.loadGameMap();
         ixreader = new MyIndexReader();
         wordCleaner = new WordCleaner();
